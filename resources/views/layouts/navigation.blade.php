@@ -41,8 +41,9 @@
 
                         <x-slot name="content">
                             <x-dropdown-link :href="route('profile.show')">
-                                Perfil
+                                Perfilss
                             </x-dropdown-link>
+                            
 
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}">

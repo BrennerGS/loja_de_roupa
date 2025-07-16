@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ClientRequest extends FormRequest
 {
@@ -21,24 +22,42 @@ class ClientRequest extends FormRequest
      */
     public function rules(): array
     {
+         $clientId = $this->route('client')?->id;
+
         return [
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255|unique:clients,email,'.$this->route('client'),
-            'phone' => 'required|string|max:20',
-            'address' => 'nullable|string',
-            'cpf' => 'nullable|string|max:14|unique:clients,cpf,'.$this->route('client'),
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('clients', 'email')->ignore($clientId)
+            ],
+            'phone' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('clients', 'phone')->ignore($clientId)
+            ],
+            'cpf' => [
+                'nullable',
+                'string',
+                'max:14',
+                Rule::unique('clients', 'cpf')->ignore($clientId)
+            ],
+            'address' => 'nullable|string|max:500',
             'birth_date' => 'nullable|date',
+            'notes' => 'nullable|string'
         ];
     }
 
      public function messages()
     {
         return [
-            'name.required' => 'O nome é obrigatório',
-            'email.email' => 'Informe um e-mail válido',
-            'email.unique' => 'Este e-mail já está em uso',
+            'name.required' => 'O nome do cliente é obrigatório',
+            'email.unique' => 'Este e-mail já está sendo utilizado por outro cliente',
             'phone.required' => 'O telefone é obrigatório',
-            'cpf.unique' => 'Este CPF já está cadastrado',
+            'phone.unique' => 'Este telefone já está cadastrado',
+            'cpf.unique' => 'Este CPF já está cadastrado'
         ];
     }
     

@@ -17,6 +17,7 @@ class ProductController extends Controller
     
     public function index(Request $request)
     {
+        $this->authorize('manage-products');
 
         $qtd_page = $request->has('qtd_page') ? $request->query('qtd_page') : 15;
 
@@ -55,12 +56,17 @@ class ProductController extends Controller
     
     public function create()
     {
+        $this->authorize('manage-products');
+
         $categories = Category::all();
         return view('products.create', compact('categories'));
     }
     
     public function store(ProductRequest $request)
     {
+
+        $this->authorize('manage-products');
+
         $data = $request->validated();
         
         if ($request->hasFile('image')) {
@@ -82,12 +88,16 @@ class ProductController extends Controller
     
     public function edit(Product $product)
     {
+        $this->authorize('manage-products');
+
         $categories = Category::all();
         return view('products.edit', compact('product', 'categories'));
     }
     
     public function update(ProductRequest $request, Product $product)
     {
+        $this->authorize('manage-products');
+
         $data = $request->validated();
         
         if ($request->hasFile('image')) {
@@ -105,6 +115,8 @@ class ProductController extends Controller
     
     public function destroy(Product $product)
     {
+        $this->authorize('manage-products');
+
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
@@ -115,12 +127,16 @@ class ProductController extends Controller
     
     public function inventoryHistory(Product $product)
     {
+        $this->authorize('manage-products');
+
         $movements = $product->inventoryMovements()->with('user')->latest()->paginate(10);
         return view('products.inventory-history', compact('product', 'movements'));
     }
     
     public function adjustInventory(Request $request, Product $product)
     {
+        $this->authorize('manage-products');
+        
         $request->validate([
             'quantity' => 'required|integer|min:1',
             'type' => 'required|in:entrada,saida',

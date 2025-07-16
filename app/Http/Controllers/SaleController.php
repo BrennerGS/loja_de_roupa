@@ -21,6 +21,8 @@ class SaleController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('manage-sales');
+
         $query = Sale::with(['client', 'user', 'items'])
             ->when($request->date_from, function($q) use ($request) {
                 $q->whereDate('created_at', '>=', $request->date_from);
@@ -44,6 +46,9 @@ class SaleController extends Controller
 
     public function create()
     {
+        
+        $this->authorize('manage-sales');
+
         $products = Product::active()->get();
         $clients = Client::all();
         return view('sales.create', compact('products', 'clients'));
@@ -52,6 +57,7 @@ class SaleController extends Controller
     public function store(SaleRequest $request)
     {
 
+        $this->authorize('manage-sales');
 
         DB::beginTransaction();
     
@@ -117,12 +123,16 @@ class SaleController extends Controller
 
     public function show(Sale $sale)
     {
+        $this->authorize('manage-sales');
+
         $sale->load(['client', 'user', 'items.product']);
         return view('sales.show', compact('sale'));
     }
 
     public function print(Sale $sale)
     {   
+        $this->authorize('manage-sales');
+        
         $company = Company::firstOrNew();
 
         $sale->load(['client', 'items.product']);

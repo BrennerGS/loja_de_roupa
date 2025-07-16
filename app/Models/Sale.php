@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Sale extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'invoice_number', 'client_id', 'user_id', 'total',
         'discount', 'tax', 'payment_method', 'notes'
@@ -18,6 +22,7 @@ class Sale extends Model
         'discount' => 'decimal:2',
         'tax' => 'decimal:2',
         'created_at' => 'datetime:d/m/Y H:i',
+        'deleted_at' => 'datetime',
     ];
 
     public function client(): BelongsTo

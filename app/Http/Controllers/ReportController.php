@@ -20,11 +20,15 @@ class ReportController extends Controller
 
     public function index()
     {
+        $this->authorize('view-reports');
+
         return view('reports.index');
     }
 
     public function sales(Request $request)
     {
+        $this->authorize('view-reports');
+
         $startDate = $request->start_date ?? now()->subDays(30)->format('Y-m-d');
         $endDate = $request->end_date ?? now()->format('Y-m-d');
 
@@ -85,6 +89,8 @@ class ReportController extends Controller
 
     public function products(Request $request)
     {
+        $this->authorize('view-reports');
+
         // Consulta base com filtros
         $query = Product::with(['category'])
             ->when($request->category_id, function($q) use ($request) {
@@ -149,6 +155,8 @@ class ReportController extends Controller
 
     public function clients(Request $request)
     {
+        $this->authorize('view-reports');
+        
         // Filtros
         $query = Client::withCount(['sales as purchases_count'])
             ->withSum('sales as total_spent', 'total')

@@ -64,7 +64,9 @@
                                 Configurações
                             </a>
                         @endif
+                        
                     </nav>
+
                     @endauth
                 </div>
                 
@@ -86,6 +88,16 @@
                         <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                             <i class="fas fa-user mr-2"></i> Perfil
                         </a>
+                        @can('manage-trash')
+                            <a href="{{ route('trash.index') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 ">
+                               <i class="fas fa-trash mr-2"></i> Lixeira
+                            </a>
+                        @endcan
+                        @can('view-activity-logs')
+                            <a href="{{ route('admin.activity-logs.index') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                               <i class="fas fa-history mr-2"></i> Historico
+                            </a>
+                        @endcan
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">

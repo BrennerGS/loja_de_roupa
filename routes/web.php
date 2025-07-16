@@ -11,7 +11,9 @@ use App\Http\Controllers\{
     ReportController,
     SettingsController,
     SocialMediaController,
-    HomeController
+    HomeController,
+    Admin\ActivityLogController,
+    TrashController
 };
 
 
@@ -22,9 +24,15 @@ Route::get('login', [App\Http\Controllers\Auth\LoginController::class, 'showLogi
 Route::post('login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
 Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
+
+
 // Rotas Protegidas
 Route::middleware(['auth'])->group(function () {
-    
+    Route::prefix('admin')->middleware(['auth', 'permission:view-activity-logs'])->group(function () {
+        Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity-logs.index');
+        Route::get('activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('admin.activity-logs.show');
+    });
+
     Route::get('/profile/show', [ProfileController::class, 'edit'])->name('profile');
     Route::get('/profile/sh', [ProfileController::class, 'edit'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -36,6 +44,13 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/', [HomeController::class, 'index'])->name('home');
     
+    // Lixeira
+    Route::prefix('trash')->middleware('permission:manage-trash')->group(function () {
+        Route::get('/', [TrashController::class, 'index'])->name('trash.index');
+        Route::delete('/{model}/{id}', [TrashController::class, 'destroy'])->name('trash.destroy');
+        Route::post('/{model}/{id}/restore', [TrashController::class, 'restore'])->name('trash.restore');
+    });
+
     // Produtos
     Route::prefix('products')->middleware('permission:manage-products')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('products.index');
@@ -94,7 +109,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('settings.index');
         Route::post('/update-company', [SettingsController::class, 'updateCompany'])->name('settings.update-company');
         Route::get('/users', [SettingsController::class, 'users'])->name('settings.users');
-        Route::post('/users/{user}/update-permissions', [SettingsController::class, 'updateUserPermissions'])->name('settings.update-user-permissions');
+        Route::post('/users/{user}/permissions', [SettingsController::class, 'updateUserPermissions'])->name('settings.users.update-permissions');
     });
     
     // Redes Sociais

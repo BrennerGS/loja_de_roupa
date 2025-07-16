@@ -15,6 +15,8 @@ class SupplierController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('manage-suppliers');
+
         $query = Supplier::when($request->search, function($q) use ($request) {
             $q->where('name', 'like', "%{$request->search}%")
               ->orWhere('contact_name', 'like', "%{$request->search}%")
@@ -28,12 +30,14 @@ class SupplierController extends Controller
 
     public function create()
     {
-        
+        $this->authorize('manage-suppliers');
+
         return view('suppliers.create');
     }
 
     public function store(SupplierRequest $request)
     {
+        $this->authorize('manage-suppliers');
 
         $data = $request->validated();
         $data['products_provided'] = explode(',', $request->products_provided);
@@ -44,17 +48,22 @@ class SupplierController extends Controller
 
     public function show(Supplier $supplier)
     {
+        $this->authorize('manage-suppliers');
 
         return view('suppliers.show', compact('supplier'));
     }
 
     public function edit(Supplier $supplier)
     {
+        $this->authorize('manage-suppliers');
+
         return view('suppliers.edit', compact('supplier'));
     }
 
     public function update(SupplierRequest $request, Supplier $supplier)
     {
+        $this->authorize('manage-suppliers');
+
         $data = $request->validated();
         $data['products_provided'] = explode(',', $request->products_provided);
         
@@ -64,6 +73,8 @@ class SupplierController extends Controller
 
     public function destroy(Supplier $supplier)
     {
+        $this->authorize('manage-suppliers');
+        
         $supplier->delete();
         return redirect()->route('suppliers.index')->with('success', 'Fornecedor removido com sucesso!');
     }

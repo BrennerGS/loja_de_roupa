@@ -15,6 +15,8 @@ class SocialMediaController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('manage-social');
+
         $query = SocialMediaPost::with('user')
             ->when($request->platform, function($q) use ($request) {
                 $q->where('platform', $request->platform);
@@ -36,11 +38,15 @@ class SocialMediaController extends Controller
 
     public function create()
     {
+        $this->authorize('manage-social');
+
         return view('social.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('manage-social');
+
         $data = $request->validate([
             'platform' => 'required|string',
             'post_type' => 'required|string',
@@ -63,11 +69,15 @@ class SocialMediaController extends Controller
 
     public function edit(SocialMediaPost $post)
     {
+        $this->authorize('manage-social');
+
         return view('social.edit', compact('post'));
     }
 
     public function update(Request $request, SocialMediaPost $post)
     {
+        $this->authorize('manage-social');
+
         $data = $request->validate([
             'platform' => 'required|string',
             'post_type' => 'required|string',
@@ -91,6 +101,8 @@ class SocialMediaController extends Controller
 
     public function destroy(SocialMediaPost $post)
     {
+        $this->authorize('manage-social');
+        
         if ($post->image) {
             Storage::delete($post->image);
         }

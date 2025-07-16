@@ -18,7 +18,8 @@ class Product extends Model
     protected $casts = [
         'price' => 'decimal:2',
         'cost_price' => 'decimal:2',
-        'active' => 'boolean'
+        'active' => 'boolean',
+        'deleted_at' => 'datetime',
     ];
     
     public function category()

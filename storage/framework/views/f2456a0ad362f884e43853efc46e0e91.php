@@ -65,7 +65,9 @@
                                 Configurações
                             </a>
                         <?php endif; ?>
+                        
                     </nav>
+
                     <?php endif; ?>
                 </div>
                 
@@ -87,6 +89,16 @@
                         <a href="<?php echo e(route('profile')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                             <i class="fas fa-user mr-2"></i> Perfil
                         </a>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage-trash')): ?>
+                            <a href="<?php echo e(route('trash.index')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 ">
+                               <i class="fas fa-trash mr-2"></i> Lixeira
+                            </a>
+                        <?php endif; ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view-activity-logs')): ?>
+                            <a href="<?php echo e(route('admin.activity-logs.index')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                               <i class="fas fa-history mr-2"></i> Historico
+                            </a>
+                        <?php endif; ?>
                         <form method="POST" action="<?php echo e(route('logout')); ?>">
                             <?php echo csrf_field(); ?>
                             <button type="submit" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">

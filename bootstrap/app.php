@@ -5,6 +5,21 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Barryvdh\DomPDF\ServiceProvider;
 
+use App\Models\Product;
+use App\Models\Sale;
+use App\Models\Client;
+use App\Models\Supplier;
+use App\Models\Company;
+use App\Models\SocialMediaPost;
+use App\Observers\ProductObserver;
+use App\Observers\SaleObserver;
+use App\Observers\ClientObserver;
+use App\Observers\SupplierObserver;
+use App\Observers\CompanyObserver;
+use App\Observers\SocialMediaPostObserver;
+
+
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -46,6 +61,14 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withProviders([
         Barryvdh\DomPDF\ServiceProvider::class, // ✅ agora está correto!
+
+        // Registrar os observers
+        Product::observe(ProductObserver::class),
+        Sale::observe(SaleObserver::class),
+        Client::observe(ClientObserver::class),
+        Supplier::observe(SupplierObserver::class),
+        Company::observe(CompanyObserver::class),
+        SocialMediaPost::observe(SocialMediaPostObserver::class),
     ])
     ->withExceptions(function (Exceptions $exceptions): void {
         //
